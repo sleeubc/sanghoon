@@ -15,7 +15,7 @@ summarise2 <- function(data, ...) {
 
   groupVars <- group_vars(data)
 
-  schemes <-  purrr::map( length(groupVars):0, ~combn(groupVars, ., simplify=FALSE) ) %>%
+  schemes <-  purrr::map( 0:length(groupVars), ~combn(groupVars, ., simplify=FALSE) ) %>%
     unlist(recursive = FALSE)
 
   results <-  lapply(schemes, FUN = function(x) {
@@ -24,6 +24,7 @@ summarise2 <- function(data, ...) {
   }
   )
 
-  results %>% bind_rows()
+  combined_results <- results %>% bind_rows()
+  combined_results[, c(groupVars, setdiff(names(combined_results), groupVars ))]
 
 }
