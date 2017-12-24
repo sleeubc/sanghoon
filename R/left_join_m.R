@@ -12,7 +12,7 @@
 #' band_members %>% left_join_m(band_instruments, by = "name")
 #' band_members %>% left_join_m(band_instruments2, by = c("name" = "artist"))
 #'
-#' The following is based on https://stackoverflow.com/questions/26611717/can-dplyr-join-on-multiple-columns-or-composite-key
+#' # The following is based on https://stackoverflow.com/questions/26611717/can-dplyr-join-on-multiple-columns-or-composite-key
 #'
 #' library(dplyr)
 #'
