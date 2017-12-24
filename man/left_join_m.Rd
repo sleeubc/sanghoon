@@ -14,5 +14,22 @@ library(tidyverse)
 band_members \%>\% left_join_m(band_instruments)
 band_members \%>\% left_join_m(band_instruments, by = "name")
 band_members \%>\% left_join_m(band_instruments2, by = c("name" = "artist"))
+
+https://stackoverflow.com/questions/26611717/can-dplyr-join-on-multiple-columns-or-composite-key
+
+library(dplyr)
+d1 <- data_frame(
+  x = letters[2:4],
+  y = LETTERS[2:4],
+  a = rnorm(3)
+)
+
+d2 <- data_frame(
+  x2 = letters[3:1],
+  y2 = LETTERS[3:1],
+  b = rnorm(3)
+)
+
+left_join_m(d1, d2, by = c("x" = "x2", "y" = "y2"))
 }
 \keyword{left_join}
