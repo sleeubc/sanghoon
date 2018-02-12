@@ -11,7 +11,7 @@
 #' library(tidyverse)
 #' mtcars %>% group_by(cyl, vs) %>% summarise_combo(cyl_n = n(), mean(mpg))
 
-summarise_combo <- function(data, ...) {
+summarise_combo <- function(data, ..., type=FALSE) {
 
   groupVars <- group_vars(data) %>% map(as.name)
 
@@ -19,9 +19,10 @@ summarise_combo <- function(data, ...) {
     unlist(recursive = FALSE)
 
   results <- groupCombos %>%
-    map(function(x) {data %>% group_by(!!! x) %>% summarise(...)} ) %>%
-    bind_rows()
+    map(function(x) {data %>% group_by(!!! x) %>% summarise(...)} )
 
-  results %>% select(!!! groupVars, everything())
+  if (isTRUE(type)) results <- map2(results, 1:length(results), ~ .x %>% mutate(`_type_` = .y) %>% select(`_type_`, everything())  )
+
+  results  %>% bind_rows() %>% select(!!! groupVars, everything())
 }
 
