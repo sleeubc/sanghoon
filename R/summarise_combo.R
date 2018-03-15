@@ -20,7 +20,7 @@ summarise_combo <- function(data, ..., type=FALSE) {
     unlist(recursive = FALSE)
 
   results <- groupCombos %>%
-    map(function(x) {data %>% group_by(!!! x) %>% summarise(...) %>% map_at( groupVarsStr, ~ ifelse(is.na(.),"NA", .) ) %>% as_tibble} )
+    map(function(x) {data %>% group_by(!!! x) %>% summarise(...) %>% replace_na(list("NA"))} )
 
   if (isTRUE(type)) results <- results %>% map2( 1:length(results), ~ .x %>% mutate(`_type_` = .y) %>% select(`_type_`, everything())  )
 
