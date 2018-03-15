@@ -13,18 +13,18 @@
 
 summarise_combo <- function(data, ..., type=FALSE) {
 
-  groupVarsList <- group_vars(data)
-  groupVars <- groupVarsList %>% map(as.name)
+  groupVarsStr <- group_vars(data)
+  groupVarsNames <- groupVarsStr %>% map(as.name)
 
-  groupCombos <-  map( 0:length(groupVars), ~combn(groupVars, ., simplify=FALSE) ) %>%
+  groupCombos <-  map( 0:length(groupVarsNames), ~combn(groupVarsNames, ., simplify=FALSE) ) %>%
     unlist(recursive = FALSE)
 
   results <- groupCombos %>%
-    map(function(x) {data %>% group_by(!!! x) %>% summarise(...) %>% map_at( groupVarsList, ~ ifelse(is.na(.),"NA", .) )} )
+    map(function(x) {data %>% group_by(!!! x) %>% summarise(...) %>% map_at( groupVarsStr, ~ ifelse(is.na(.),"NA", .) ) %>% as_tibble} )
 
-  if (isTRUE(type)) results <- map2(results, 1:length(results), ~ .x %>% mutate(`_type_` = .y) %>% select(`_type_`, everything())  )
+  if (isTRUE(type)) results <- results %>% map2( 1:length(results), ~ .x %>% mutate(`_type_` = .y) %>% select(`_type_`, everything())  )
 
-  results  %>% bind_rows() %>% select(!!! groupVars, everything())
+  results  %>% bind_rows() %>% select(!!! groupVarsNames, everything())
 
 }
 
