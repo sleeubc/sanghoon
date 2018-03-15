@@ -4,7 +4,7 @@
 \alias{summarise_combo}
 \title{Run 'dplyr::summarise' for each combination of group_by variables}
 \usage{
-summarise_combo(data, ...)
+summarise_combo(data, ..., type = FALSE)
 }
 \description{
 This function runs dplyr::summarise for each combination of group variables.
