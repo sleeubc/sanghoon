@@ -20,7 +20,11 @@ summarise_combo <- function(data, ..., type=FALSE) {
     unlist(recursive = FALSE)
 
   results <- groupCombos %>%
-    map(function(x) {data %>% group_by(!!! x) %>% summarise(...) %>% replace_na(list("NA"))} )
+    map(function(x) {
+      # I need to replace NA with "NA". This is necessary; when results are combined, some NAs appear because they were not used as group_by variables.
+      replace_na_list <- rep("NA", length(x)) %>% as.list() %>% setNames(x)
+      data %>% group_by(!!! x) %>% summarise(...) %>% replace_na(replace_na_list)
+      } )
 
   if (isTRUE(type)) results <- results %>% map2( 1:length(results), ~ .x %>% mutate(`_type_` = .y) %>% select(`_type_`, everything())  )
 
