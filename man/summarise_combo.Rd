@@ -4,7 +4,16 @@
 \alias{summarise_combo}
 \title{Run 'dplyr::summarise' for each combination of group_by variables}
 \usage{
-summarise_combo(data, ..., type = FALSE)
+summarise_combo(data, ..., type = FALSE, na.str = TRUE)
+}
+\arguments{
+\item{data}{data frame or tibble}
+
+\item{...}{summarise commands}
+
+\item{type}{If TRUE, it adds "_type_" column, an identifier for each group.}
+
+\item{na.str}{If TRUE, it convers NA to a string "NA" within each group. This distinguished "NA" as a group variable value from NA indicating the variable was not used as a group variable. See Examples.}
 }
 \description{
 This function runs dplyr::summarise for each combination of group variables.
@@ -14,6 +23,10 @@ https://stackoverflow.com/questions/28992028/grouping-over-all-possible-combinat
 }
 \examples{
 library(tidyverse)
-mtcars \%>\% group_by(cyl, vs) \%>\% summarise_combo(cyl_n = n(), mean(mpg))
+data <- tibble(a = c("a1","a1","a2","a3"), b= c("b1", "b2", "b2", NA), c=c(1,2,3,4) )
+data \%>\% group_by(a,b) \%>\% summarise_combo(n(), mean(c))
+data \%>\% group_by(a,b) \%>\% summarise_combo(n(), mean(c), type=TRUE)
+data \%>\% group_by(a,b) \%>\% summarise_combo(n(), mean(c), type=TRUE, na.str=FALSE)
 }
-\keyword{summarise}
+\keyword{combo}
+\keyword{summarise,}
