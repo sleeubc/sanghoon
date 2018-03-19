@@ -58,12 +58,19 @@ left_join_m <- function(x, y, by=NULL,... ) {
                    any(duplicated(y[, by2$y])) %>% ifelse("m","1")
   )))
 
-  message(paste0(c(
-    "Number of observations: ",
+  suppressMessages(
+    unmatched_rows <- x %>% anti_join(y, by) %>% nrow()
+  )
+
+  message(c(
+    "Number of rows: ",
     nrow(x),
     " became ",
-    nrow(outcome))
-  ))
+    nrow(outcome)),
+    ", with ",
+    unmatched_rows,
+    " unmatched rows."
+  )
 
   outcome
 
