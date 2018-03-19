@@ -44,38 +44,27 @@
 #'
 #' left_join_m(d1, d2, by = c("x" = "x2", "y" = "y2"))
 
+left_join_m <- function(x, y, by=NULL,... ) {
 
-left_join_m <- function(df_left, df_right, by=NULL,... ) {
+  suppressMessages(
+    by2  <-  common_by(by, x, y)
+  )
 
-  if ( is.null(by) ) {
-    key_left <- intersect(names(df_left), names(df_right))
-    key_right <- key_left
-  } else if ( is.null(names(by))) {
-    key_left <- by
-    key_right <- key_left
-  } else {
-    key_left <- by %>% names()
-    key_right <- by %>% unname()
-  }
-
-  outcome_df <- left_join(df_left, df_right, by, ...)
+  outcome <- left_join(x, y, by,...)
 
   message(paste0(c("Match type: ",
-                   any(duplicated(df_left[, key_left])) %>% ifelse("m","1"),
+                   any(duplicated(x[, by2$x])) %>% ifelse("m","1"),
                    ":",
-                   any(duplicated(df_right[, key_right])) %>% ifelse("m","1")
+                   any(duplicated(y[, by2$y])) %>% ifelse("m","1")
   )))
 
+  message(paste0(c(
+    "Number of observations: ",
+    nrow(x),
+    " became ",
+    nrow(outcome))
+  ))
 
-  unmatched_left <- df_left %>% {suppressMessages(anti_join(., df_right, by))} %>% nrow()
-  message(paste0("Unmatched rows (left): ", unmatched_left))
-
-  # temp <- key_left
-  # names(temp) <- key_right
-  # unmatched_right <- df_right %>% {suppressMessages(anti_join(., df_left, by=temp))} %>% nrow()
-  # message(paste0("unmatched rows (right): ", unmatched_right))
-
-  outcome_df
+  outcome
 
   }
-

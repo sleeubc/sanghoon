@@ -4,7 +4,7 @@
 \alias{left_join_m}
 \title{left_join with messages}
 \usage{
-left_join_m(df_left, df_right, by = NULL, ...)
+left_join_m(x, y, by = NULL, ...)
 }
 \description{
 This function runs left_join and provides information on match type (1:1, 1:m, m:1, m:m) and the number of unmatched rows in the left tibble.
