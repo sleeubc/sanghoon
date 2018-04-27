@@ -6,7 +6,7 @@
 #'
 #' @param data data frame or tibble
 #' @param ... summarise commands
-#' @param type  If TRUE, it adds "_type_" column, an identifier for each group.
+#' @param type  If TRUE, it adds ".type." column, an identifier for each group.
 #' @param na.str If TRUE, it convers NA to a string "NA" within each group. This distinguished "NA" as a group variable value from NA indicating the variable was not used as a group variable. See Examples.
 #' @keywords summarise, combo
 #' @export
@@ -44,7 +44,7 @@ summarise_combo <- function(data, ..., type=FALSE, na.str=TRUE) {
 
   }
 
-  if (isTRUE(type)) results <- results %>% map2( 1:length(results), ~ .x %>% mutate(`_type_` = .y) %>% select(`_type_`, everything())  )
+  if (isTRUE(type)) results <- results %>% map2( 1:length(results), ~ .x %>% mutate(.type. = .y) %>% select(.type., everything())  )
 
   results  %>% bind_rows() %>% select(!!! groupVarsNames, everything())
 
