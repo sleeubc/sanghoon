@@ -22,7 +22,7 @@ summary(m1)
 m1$se_cluster
 m1$vcov_cluster
 
-stargazer(m, m1, se=(NULL, m1$se_cluster))
+stargazer(m, m1, se=list(NULL, m1$se_cluster))
 }
 \keyword{clustered}
 \keyword{errors}

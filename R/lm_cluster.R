@@ -18,7 +18,7 @@
 #' m1$se_cluster
 #' m1$vcov_cluster
 #'
-#' stargazer(m, m1, se=(NULL, m1$se_cluster))
+#' stargazer(m, m1, se=list(NULL, m1$se_cluster))
 
 lm_cluster <- function(data, formula, cluster, ...) {
 
