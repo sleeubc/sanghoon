@@ -2,5 +2,6 @@
 
 export(duplicates_by)
 export(left_join_m)
+export(lm_cluster)
 export(se_mean)
 export(summarise_combo)

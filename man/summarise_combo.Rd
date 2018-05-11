@@ -11,7 +11,7 @@ summarise_combo(data, ..., type = FALSE, na.str = TRUE)
 
 \item{...}{summarise commands}
 
-\item{type}{If TRUE, it adds "_type_" column, an identifier for each group.}
+\item{type}{If TRUE, it adds ".type." column, an identifier for each group.}
 
 \item{na.str}{If TRUE, it convers NA to a string "NA" within each group. This distinguished "NA" as a group variable value from NA indicating the variable was not used as a group variable. See Examples.}
 }
