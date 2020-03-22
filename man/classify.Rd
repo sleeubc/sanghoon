@@ -6,6 +6,11 @@
 \usage{
 classify(x, n, style = "equal", num_format = scales::comma_format())
 }
+\arguments{
+\item{x}{numeric vector}
+
+\item{style}{"equal", "quantile", "jenks"}
+}
 \description{
 This function discretize a numeric vector into an interval factor
 }
@@ -15,4 +20,7 @@ library(sf)
 nc <- sf::st_read(system.file("shape/nc.shp", package = "sf"), quiet = TRUE)
 ggplot(nc) +  geom_sf(aes(fill = classify(AREA, 3, style ="jenks", num_format = scales::comma_format(accuracy = 0.01))))
 }
-\keyword{geom_sf}
+\keyword{Jenks,}
+\keyword{breaks}
+\keyword{geom_sf,}
+\keyword{natural}

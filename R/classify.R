@@ -2,9 +2,10 @@
 #'
 #' This function discretize a numeric vector into an interval factor
 #'
-#'
-#' @param
-#' @keywords geom_sf
+#' @param x numeric vector
+#' @param style "equal", "quantile", "jenks"
+#' @param num_format
+#' @keywords geom_sf, Jenks, natural breaks
 #' @export
 #' @examples
 #' library(ggplot2)
@@ -16,6 +17,7 @@ classify <- function(x, n, style="equal", num_format=scales::comma_format()) {
 
   require(BAMMtools)
   require(scales)
+  require(dplyr)
 
   breaks_cut <- switch( style,
                         equal=seq(min(x, na.rm = TRUE), max(x, na.rm = TRUE), length.out = n+1 ),
