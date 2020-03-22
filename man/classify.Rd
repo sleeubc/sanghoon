@@ -7,9 +7,13 @@
 classify(x, n, style = "equal", num_format = scales::comma_format())
 }
 \arguments{
-\item{x}{numeric vector}
+\item{x}{input vector (numeric)}
+
+\item{n}{number of intervals}
 
 \item{style}{"equal", "quantile", "jenks"}
+
+\item{num_format}{a vectorized function that formats numbers.}
 }
 \description{
 This function discretize a numeric vector into an interval factor
@@ -21,6 +25,10 @@ nc <- sf::st_read(system.file("shape/nc.shp", package = "sf"), quiet = TRUE)
 ggplot(nc) +  geom_sf(aes(fill = classify(AREA, 3, style ="jenks", num_format = scales::comma_format(accuracy = 0.01))))
 }
 \keyword{Jenks,}
-\keyword{breaks}
+\keyword{breaks,}
+\keyword{classification}
+\keyword{equal}
 \keyword{geom_sf,}
+\keyword{interval,}
 \keyword{natural}
+\keyword{quantile,}

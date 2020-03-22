@@ -2,10 +2,11 @@
 #'
 #' This function discretize a numeric vector into an interval factor
 #'
-#' @param x numeric vector
+#' @param x input vector (numeric)
+#' @param n number of intervals
 #' @param style "equal", "quantile", "jenks"
-#' @param num_format
-#' @keywords geom_sf, Jenks, natural breaks
+#' @param num_format a vectorized function that formats numbers.
+#' @keywords geom_sf, Jenks, natural breaks, equal interval, quantile, classification
 #' @export
 #' @examples
 #' library(ggplot2)
