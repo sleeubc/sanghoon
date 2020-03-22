@@ -35,6 +35,7 @@ lm_cluster <- function(data, formula, cluster, ...) {
 
   fit[["vcov_cluster"]] <- vcov_cluster
   fit[["se_cluster"]] <- se_cluster
+  fit[["cluster"]] <- quo_name(cluster)
 
   fit
 
