@@ -4,7 +4,7 @@
 \alias{classify}
 \title{classify}
 \usage{
-classify(x, n, style = "equal", num_format = scales::comma_format())
+classify(x, n, style = "equal", label = scales::comma_format())
 }
 \arguments{
 \item{x}{input vector (numeric)}
@@ -13,7 +13,7 @@ classify(x, n, style = "equal", num_format = scales::comma_format())
 
 \item{style}{"equal", "quantile", "jenks"}
 
-\item{num_format}{a vectorized function that formats numbers.}
+\item{label}{a vectorized function that formats numbers.}
 }
 \description{
 This function discretize a numeric vector into an interval factor
@@ -22,7 +22,7 @@ This function discretize a numeric vector into an interval factor
 library(ggplot2)
 library(sf)
 nc <- sf::st_read(system.file("shape/nc.shp", package = "sf"), quiet = TRUE)
-ggplot(nc) +  geom_sf(aes(fill = classify(AREA, 3, style ="jenks", num_format = scales::comma_format(accuracy = 0.01))))
+ggplot(nc) +  geom_sf(aes(fill = classify(AREA, 3, style ="jenks", label = scales::comma_format(accuracy = 0.01))))
 }
 \keyword{Jenks,}
 \keyword{breaks,}
