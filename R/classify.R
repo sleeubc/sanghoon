@@ -29,5 +29,5 @@ classify <- function(x, n, style="equal", label=scales::comma_format()) {
 
   labels_cut <- paste( label(breaks_cut)[-length(breaks_cut)], label(lead(breaks_cut)[-length(breaks_cut)]), sep=" - ")
 
-  cut( x, breaks= breaks_cut, labels=labels_cut )
+  cut( x, breaks= breaks_cut, labels=labels_cut, include.lowest = TRUE, ordered_result = TRUE)
 }
