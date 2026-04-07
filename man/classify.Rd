@@ -4,7 +4,13 @@
 \alias{classify}
 \title{classify}
 \usage{
-classify(x, n, style = "equal", label = scales::comma_format())
+classify(
+  x,
+  n,
+  style = "equal",
+  label = scales::comma_format(),
+  label_type = c("breaks", "observed")
+)
 }
 \arguments{
 \item{x}{input vector (numeric)}
@@ -13,22 +19,17 @@ classify(x, n, style = "equal", label = scales::comma_format())
 
 \item{style}{"equal", "quantile", "jenks"}
 
-\item{label}{a vectorized function that formats numbers.}
+\item{label}{a function that formats break values into label strings.}
+
+\item{label_type}{"breaks" labels classes using the computed breakpoints;
+"observed" labels classes using the minimum and maximum values observed in
+each class.}
 }
 \description{
-This function discretize a numeric vector into an interval factor
+Discretize a numeric vector into an ordered interval factor.
 }
 \examples{
-library(ggplot2)
-library(sf)
-nc <- sf::st_read(system.file("shape/nc.shp", package = "sf"), quiet = TRUE)
-ggplot(nc) +  geom_sf(aes(fill = classify(AREA, 3, style ="jenks", label = scales::comma_format(accuracy = 0.01))))
+x <- c(1, 1.8, 2, 3, 3.1, 4.5)
+classify(x, 3, label = scales::number_format(accuracy = 0.1))
+classify(x, 3, label = scales::number_format(accuracy = 0.1), label_type = "observed")
 }
-\keyword{Jenks,}
-\keyword{breaks,}
-\keyword{classification}
-\keyword{equal}
-\keyword{geom_sf,}
-\keyword{interval,}
-\keyword{natural}
-\keyword{quantile,}
