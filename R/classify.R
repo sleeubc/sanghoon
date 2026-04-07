@@ -6,17 +6,17 @@
 #' @param n number of intervals
 #' @param style "equal", "quantile", "jenks"
 #' @param label a function that formats break values into label strings.
-#' @param label_type "breaks" labels classes using the computed breakpoints;
-#'   "observed" labels classes using the minimum and maximum values observed in
-#'   each class.
+#' @param label_type "observed" labels classes using the minimum and maximum
+#'   values observed in each class; "breaks" labels classes using the computed
+#'   breakpoints.
 #' @export
 #' @examples
 #' x <- c(1, 1.8, 2, 3, 3.1, 4.5)
 #' classify(x, 3, label = scales::number_format(accuracy = 0.1))
-#' classify(x, 3, label = scales::number_format(accuracy = 0.1), label_type = "observed")
+#' classify(x, 3, label = scales::number_format(accuracy = 0.1), label_type = "breaks")
 
 classify <- function(x, n, style = "equal", label = scales::comma_format(),
-                     label_type = c("breaks", "observed")) {
+                     label_type = c("observed", "breaks")) {
 
   label_type <- match.arg(label_type)
 
@@ -36,20 +36,33 @@ classify <- function(x, n, style = "equal", label = scales::comma_format(),
 
   lower_breaks <- breaks_cut[-length(breaks_cut)]
   upper_breaks <- breaks_cut[-1]
-  labels_breaks <- paste(label(lower_breaks), "to", label(upper_breaks))
-  labels_breaks[-1] <- paste0(">", label(lower_breaks[-1]), " to ", label(upper_breaks[-1]))
+  labels_break_values <- label(breaks_cut)
+  labels_lower_breaks <- labels_break_values[-length(labels_break_values)]
+  labels_upper_breaks <- labels_break_values[-1]
+  labels_breaks <- paste(labels_lower_breaks, "to", labels_upper_breaks)
+  labels_breaks[-1] <- paste0(">", labels_lower_breaks[-1], " to ", labels_upper_breaks[-1])
 
   if (label_type == "observed") {
     classes <- cut(x, breaks = breaks_cut, labels = FALSE, include.lowest = TRUE)
-    labels_cut <- vapply(seq_along(labels_breaks), function(class_i) {
+    observed_ranges <- lapply(seq_along(labels_breaks), function(class_i) {
       values <- x[classes == class_i & !is.na(classes)]
-      if (length(values) == 0) return(labels_breaks[class_i])
+      if (length(values) == 0) return(NULL)
 
-      min_value <- min(values, na.rm = TRUE)
-      max_value <- max(values, na.rm = TRUE)
-      if (isTRUE(min_value == max_value)) return(label(min_value))
+      c(min(values, na.rm = TRUE), max(values, na.rm = TRUE))
+    })
 
-      paste(label(min_value), "to", label(max_value))
+    observed_values <- unlist(observed_ranges)
+    observed_labels <- label(observed_values)
+    observed_labels <- split(observed_labels, rep(seq_along(observed_ranges), lengths(observed_ranges)))
+
+    labels_cut <- vapply(seq_along(labels_breaks), function(class_i) {
+      values <- observed_ranges[[class_i]]
+      if (is.null(values)) return(labels_breaks[class_i])
+
+      range_labels <- observed_labels[[as.character(class_i)]]
+      if (isTRUE(values[1] == values[2])) return(range_labels[1])
+
+      paste(range_labels[1], "to", range_labels[2])
     }, character(1))
   } else {
     labels_cut <- labels_breaks
