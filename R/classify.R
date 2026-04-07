@@ -6,17 +6,17 @@
 #' @param n number of intervals
 #' @param style "equal", "quantile", "jenks"
 #' @param label a function that formats break values into label strings.
-#' @param label_type "observed" labels classes using the minimum and maximum
-#'   values observed in each class; "breaks" labels classes using the computed
-#'   breakpoints.
+#' @param label_type "breaks" labels classes using the computed breakpoints;
+#'   "observed" labels classes using the minimum and maximum values observed in
+#'   each class.
 #' @export
 #' @examples
 #' x <- c(1, 1.8, 2, 3, 3.1, 4.5)
 #' classify(x, 3, label = scales::number_format(accuracy = 0.1))
-#' classify(x, 3, label = scales::number_format(accuracy = 0.1), label_type = "breaks")
+#' classify(x, 3, label = scales::number_format(accuracy = 0.1), label_type = "observed")
 
 classify <- function(x, n, style = "equal", label = scales::comma_format(),
-                     label_type = c("observed", "breaks")) {
+                     label_type = c("breaks", "observed")) {
 
   label_type <- match.arg(label_type)
 

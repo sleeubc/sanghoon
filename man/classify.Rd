@@ -9,7 +9,7 @@ classify(
   n,
   style = "equal",
   label = scales::comma_format(),
-  label_type = c("observed", "breaks")
+  label_type = c("breaks", "observed")
 )
 }
 \arguments{
@@ -21,9 +21,9 @@ classify(
 
 \item{label}{a function that formats break values into label strings.}
 
-\item{label_type}{"observed" labels classes using the minimum and maximum
-values observed in each class; "breaks" labels classes using the computed
-breakpoints.}
+\item{label_type}{"breaks" labels classes using the computed breakpoints;
+"observed" labels classes using the minimum and maximum values observed in
+each class.}
 }
 \description{
 Discretize a numeric vector into an ordered interval factor.
@@ -31,5 +31,5 @@ Discretize a numeric vector into an ordered interval factor.
 \examples{
 x <- c(1, 1.8, 2, 3, 3.1, 4.5)
 classify(x, 3, label = scales::number_format(accuracy = 0.1))
-classify(x, 3, label = scales::number_format(accuracy = 0.1), label_type = "breaks")
+classify(x, 3, label = scales::number_format(accuracy = 0.1), label_type = "observed")
 }
