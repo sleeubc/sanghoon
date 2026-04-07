@@ -1,52 +1,48 @@
-#' Run 'dplyr::summarise' for each combination of group_by variables
+#' Run summarise for all combinations of group_by variables
 #'
-#' This function runs dplyr::summarise for each combination of group variables.
+#' Runs \code{dplyr::summarise} for every subset combination of the active
+#' \code{group_by} variables and binds the results together.
 #'
-#' https://stackoverflow.com/questions/28992028/grouping-over-all-possible-combinations-of-several-variables-with-dplyr/47949800#47949800
-#'
-#' @param data data frame or tibble
-#' @param ... summarise commands
-#' @param type  If TRUE, it adds ".type." column, an identifier for each group.
-#' @param na.str If TRUE, it convers NA to a string "NA" within each group. This distinguished "NA" as a group variable value from NA indicating the variable was not used as a group variable. See Examples.
-#' @keywords summarise, combo
+#' @param data a grouped data frame (from \code{dplyr::group_by})
+#' @param ... summarise expressions passed to \code{dplyr::summarise}
+#' @param type if TRUE, adds a \code{.type.} integer column identifying each grouping combination
+#' @param na.str if TRUE (default), converts NA group values to the string \code{"NA"},
+#'   distinguishing "not grouped by this variable" from truly missing values
+#' @return A tibble with one block of rows per grouping combination, bound together.
 #' @export
 #' @examples
-#' library(tidyverse)
-#' data <- tibble(a = c("a1","a1","a2","a3"), b= c("b1", "b2", "b2", NA), c=c(1,2,3,4) )
-#' data %>% group_by(a,b) %>% summarise_combo(n(), mean(c))
-#' data %>% group_by(a,b) %>% summarise_combo(n(), mean(c), type=TRUE)
-#' data %>% group_by(a,b) %>% summarise_combo(n(), mean(c), type=TRUE, na.str=FALSE)
+#' library(dplyr)
+#' data <- tibble(a = c("a1","a1","a2","a3"), b = c("b1","b2","b2",NA), c = c(1,2,3,4))
+#' data |> group_by(a, b) |> summarise_combo(n(), mean(c))
+#' data |> group_by(a, b) |> summarise_combo(n(), mean(c), type = TRUE)
+#' data |> group_by(a, b) |> summarise_combo(n(), mean(c), type = TRUE, na.str = FALSE)
 
-summarise_combo <- function(data, ..., type=FALSE, na.str=TRUE) {
+summarise_combo <- function(data, ..., type = FALSE, na.str = TRUE) {
 
-  groupVarsStr <- group_vars(data)
-  groupVarsNames <- groupVarsStr %>% map(as.name)
+  group_vars_str   <- dplyr::group_vars(data)
+  group_vars_names <- purrr::map(group_vars_str, as.name)
 
-  groupCombos <-  map( 0:length(groupVarsNames), ~combn(groupVarsNames, ., simplify=FALSE) ) %>%
+  group_combos <- purrr::map(0:length(group_vars_names),
+                             ~ combn(group_vars_names, .x, simplify = FALSE)) |>
     unlist(recursive = FALSE)
 
-
   if (isTRUE(na.str)) {
-
-    results <- groupCombos %>%
-      map(function(x) {
-        replace_na_list <- rep("NA", length(x)) %>% as.list() %>% setNames(x)
-        data %>% group_by(!!! x) %>% summarise(...) %>% replace_na(replace_na_list)
-      } )
-
-
+    results <- purrr::map(group_combos, function(grp) {
+      replace_na_list <- setNames(rep(list("NA"), length(grp)), as.character(grp))
+      data |> dplyr::group_by(!!!grp) |> dplyr::summarise(...) |>
+        tidyr::replace_na(replace_na_list)
+    })
   } else {
-
-    results <- groupCombos %>%
-      map(function(x) {
-        data %>% group_by(!!! x) %>% summarise(...)
-      } )
-
+    results <- purrr::map(group_combos, function(grp) {
+      data |> dplyr::group_by(!!!grp) |> dplyr::summarise(...)
+    })
   }
 
-  if (isTRUE(type)) results <- results %>% map2( 1:length(results), ~ .x %>% mutate(.type. = .y) %>% select(.type., everything())  )
+  if (isTRUE(type)) {
+    results <- purrr::map2(results, seq_along(results),
+                           ~ dplyr::mutate(.x, .type. = .y) |>
+                             dplyr::select(.type., dplyr::everything()))
+  }
 
-  results  %>% bind_rows() %>% select(!!! groupVarsNames, everything())
-
+  dplyr::bind_rows(results) |> dplyr::select(!!!group_vars_names, dplyr::everything())
 }
-
